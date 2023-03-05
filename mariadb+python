@@ -1,0 +1,158 @@
+import mysql.connector
+
+# Conectamos con la base de datos
+conexion = mysql.connector.connect(
+    host="localhost",
+    user="alejandro",
+    password="alejandro",
+    database="PCamiones"
+)
+
+cursor = conexion.cursor()
+
+# Menú
+while salir==True:
+    print("Selecciona una opción:")
+    print("1. Listar camiones")
+    print("2. Listar conductores")
+    print("3. Listar remolques")
+    print("4. Buscar camiones por propietario")
+    print("5. Buscar conductores por provincia")
+    print("6. Buscar remolques por tipo")
+    print("7. Añadir camión")
+    print("8. Añadir conductor")
+    print("9. Añadir remolque")
+    print("10. Borrar camión")
+    print("11. Borrar conductor")
+    print("12. Borrar remolque")
+    print("13. Actualizar peso máximo de un camión")
+    print("0. Salir")
+
+    opcion = int(input())
+
+    if opcion == 0:
+        salir=false
+
+    elif opcion == 1:
+        # Listar camiones
+        cursor.execute("SELECT * FROM camiones")
+        camiones = cursor.fetchall()
+        print("Lista de camiones:")
+        for camion in camiones:
+            print(camion)
+
+    elif opcion == 2:
+        # Listar conductores
+        cursor.execute("SELECT * FROM conductores")
+        conductores = cursor.fetchall()
+        print("Lista de conductores:")
+        for conductor in conductores:
+            print(conductor)
+
+    elif opcion == 3:
+        # Listar remolques
+        cursor.execute("SELECT * FROM remolques")
+        remolques = cursor.fetchall()
+        print("Lista de remolques:")
+        for remolque in remolques:
+            print(remolque)
+
+    elif opcion == 4:
+        # Buscar camiones por propietario
+        propietario = input("Introduce el nombre del propietario: ")
+        cursor.execute(f"SELECT * FROM camiones WHERE propietario = '{propietario}'")
+        camiones = cursor.fetchall()
+        print(f"Camiones de {propietario}:")
+        for camion in camiones:
+            print(camion)
+
+    elif opcion == 5:
+        # Buscar conductores por provincia
+        provincia = input("Introduce la provincia: ")
+        cursor.execute(f"SELECT * FROM conductores WHERE provincia = '{provincia}'")
+        conductores = cursor.fetchall()
+        print(f"Conductores de {provincia}:")
+        for conductor in conductores:
+            print(conductor)
+
+    elif opcion == 6:
+        # Buscar remolques por tipo
+        tipo = input("Introduce el tipo de remolque: ")
+        cursor.execute(f"SELECT * FROM remolques WHERE tipo = '{tipo}'")
+        remolques = cursor.fetchall()
+        print(f"Remolques de tipo {tipo}:")
+        for remolque in remolques:
+            print(remolque)
+
+    elif opcion == 7:
+        # Añadir camión
+        matricula = input("Introduce la matrícula: ")
+        peso_maximo = input("Introduce el peso máximo: ")
+        propietario = input("Introduce el propietario: ")
+        cursor.execute(f"INSERT INTO camiones (matricula, peso_maximo, propietario) VALUES ('{matricula}', {peso_maximo}, '{propietario}')")
+        conexion.commit()
+        print("Camión añadido correctamente")
+    
+    elif opcion == 8:
+        # Añadir conductor
+        nombre = input("Introduce el nombre: ")
+        apellidos = input("Introduce los apellidos: ")
+        dni = input("Introduce el DNI: ")
+        direccion = input("Introduce la dirección: ")
+        provincia = input("Introduce la provincia: ")
+        poblacion = input("Introduce la población: ")
+        telefono = input("Introduce el teléfono: ")
+        tarifa_kilo = input("Introduce la tarifa por kilo (opcional): ")
+        tarifa_km = input("Introduce la tarifa por kilómetro (opcional): ")
+        codigo_unico = input("Introduce el código único (opcional): ")
+        cuenta_propia = input("Indica si el conductor tiene cuenta propia (1 = sí, 0 = no): ")
+        if tarifa_kilo:
+            cursor.execute(f"INSERT INTO conductores (nombre, apellidos, dni, direccion, provincia, poblacion, telefono, tarifa_kilo, tarifa_km, codigo_unico, cuenta_propia) VALUES ('{nombre}', '{apellidos}', '{dni}', '{direccion}', '{provincia}', '{poblacion}', '{telefono}', {tarifa_kilo}, {tarifa_km or 0.66}, '{codigo_unico or ''}', {cuenta_propia})")
+        else:
+            cursor.execute(f"INSERT INTO conductores (nombre, apellidos, dni, direccion, provincia, poblacion, telefono, tarifa_kilo, tarifa_km, codigo_unico, cuenta_propia) VALUES ('{nombre}', '{apellidos}', '{dni}', '{direccion}', '{provincia}', '{poblacion}', '{telefono}', 0.69, {tarifa_km or 0.66}, '{codigo_unico or ''}', {cuenta_propia})")
+        conexion.commit()
+        print("Conductor añadido correctamente")
+
+    elif opcion == 9:
+        # Añadir remolque
+        matricula = input("Introduce la matrícula: ")
+        peso = input("Introduce el peso (opcional): ")
+        capacidad = input("Introduce la capacidad (opcional): ")
+        tipo = input("Introduce el tipo: ")
+        carga = input("Introduce la carga (opcional): ")
+        carga_actual = input("Indica si el remolque tiene carga actualmente (opcional): ")
+        if peso:
+            cursor.execute(f"INSERT INTO remolques (matricula, peso, capacidad, tipo, carga, carga_actual) VALUES ('{matricula}', {peso}, {capacidad or 10000}, '{tipo}', {carga or 0}, '{carga_actual or ''}')")
+        else:
+            cursor.execute(f"INSERT INTO remolques (matricula, peso, capacidad, tipo, carga, carga_actual) VALUES ('{matricula}', 1000, {capacidad or 10000}, '{tipo}', {carga or 0}, '{carga_actual or ''}')")
+        conexion.commit()
+        print("Remolque añadido correctamente")
+
+        elif opcion == 10:
+            # Borrar camión
+            id_camion = input("Introduce el ID del camión a borrar: ")
+            cursor.execute(f"DELETE FROM camiones WHERE id = {id_camion}")
+            conexion.commit()
+            print("Camión borrado correctamente")
+
+        elif elif opcion == 11:
+        # Borrar conductor
+            dni = input("Introduce el DNI del conductor que quieres borrar: ")
+            cursor.execute(f"DELETE FROM conductores WHERE dni = '{dni}'")
+            conexion.commit()
+            print(f"Conductor con DNI {dni} borrado correctamente")
+
+        elif opcion == 12:
+            # Borrar remolque
+            matricula = input("Introduce la matrícula del remolque que quieres borrar: ")
+            cursor.execute(f"DELETE FROM remolques WHERE matricula = '{matricula}'")
+            conexion.commit()
+            print(f"Remolque con matrícula {matricula} borrado correctamente")
+
+        elif opcion == 13:
+            # Actualizar peso máximo de un camión
+            matricula = input("Introduce la matrícula del camión: ")
+            peso_maximo = input("Introduce el nuevo peso máximo: ")
+            cursor.execute(f"UPDATE camiones SET peso_maximo = {peso_maximo} WHERE matricula = '{matricula}'")
+            conexion.commit()
+            print(f"Peso máximo del camión con matrícula {matricula} actualizado correctamente")
