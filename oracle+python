@@ -1,0 +1,95 @@
+import cx_Oracle
+
+# Conectarse a la base de datos
+conexion = cx_Oracle.connect("nombre_usuario/nombre_contraseña@nombre_host/nombre_BBDD")
+cursor = conexion.cursor()
+
+# Función para listar conductores y número de camiones asignados
+def listar_conductores_camiones():
+    cursor.execute("SELECT conductores.nombre, conductores.apellidos, COUNT(camiones.matricula) AS num_camiones FROM conductores LEFT JOIN camiones ON conductores.dni = camiones.propietario GROUP BY conductores.nombre, conductores.apellidos")
+    rows = cursor.fetchall()
+    for row in rows:
+        print(f"{row[0]} {row[1]}: {row[2]} camiones asignados")
+    print("\n")
+
+# Función para buscar remolques por capacidad
+def buscar_remolques_por_capacidad():
+    cursor.execute("SELECT * FROM remolques WHERE capacidad BETWEEN 5000 AND 15000")
+    rows = cursor.fetchall()
+    for row in rows:
+        print(f"Matrícula: {row[0]}, Capacidad: {row[2]} kg, Tipo: {row[3]}")
+    print("\n")
+
+# Función para buscar camiones por propietario
+def buscar_camiones_por_propietario():
+    propietario = input("Introduce el nombre del propietario de camiones: ")
+    cursor.execute(f"SELECT matricula FROM camiones WHERE propietario = '{propietario}'")
+    rows = cursor.fetchall()
+    print(f"Camiones asignados al propietario {propietario}:")
+    for row in rows:
+        print(row[0])
+    print("\n")
+
+# Función para insertar un nuevo remolque
+def insertar_nuevo_remolque():
+    matricula = input("Introduce la matrícula del remolque: ")
+    tipo = input("Introduce el tipo de remolque: ")
+    capacidad = input("Introduce la capacidad en kg del remolque: ")
+    cursor.execute(f"INSERT INTO remolques (matricula, tipo, capacidad) VALUES ('{matricula}', '{tipo}', {capacidad})")
+    conexion.commit()
+    print(f"Remolque con matrícula {matricula} insertado correctamente")
+    print("\n")
+
+# Función para borrar un camión por matrícula
+def borrar_camion_por_matricula():
+    matricula = input("Introduce la matrícula del camión que quieres borrar: ")
+    cursor.execute(f"DELETE FROM camiones WHERE matricula = '{matricula}'")
+    conexion.commit()
+    print(f"Camión con matrícula {matricula} borrado correctamente")
+    print("\n")
+
+# Función para actualizar la tarifa por km de un conductor
+def actualizar_tarifa_por_km_conductor():
+    codigo_unico = input("Introduce el código único del conductor: ")
+    cursor.execute(f"UPDATE conductores SET tarifa_km = 0.75 WHERE codigo_unico = '{codigo_unico}'")
+    conexion.commit()
+    print(f"Tarifa por kilómetro del conductor con código único {codigo_unico} actualizada correctamente")
+    print("\n")
+
+# Función para mostrar el menú y recibir la opción elegida
+def mostrar_menudef mostrar_menu():
+while salir==True:
+    print("Menú:")
+    print("1. Listar conductores y número de camiones asignados")
+    print("2. Buscar remolques por capacidad")
+    print("3. Buscar camiones por propietario")
+    print("4. Insertar nuevo remolque")
+    print("5. Borrar camión por matrícula")
+    print("6. Actualizar tarifa por km de un conductor")
+    print("0. Salir")
+    opcion = input("Selecciona una opción: ")
+    if opcion == "1":
+        listar_conductores_camiones()
+    elif opcion == "2":
+        buscar_remolques_por_capacidad()
+    elif opcion == "3":
+        buscar_camiones_por_propietario()
+    elif opcion == "4":
+        insertar_nuevo_remolque()
+    elif opcion == "5":
+        borrar_camion_por_matricula()
+    elif opcion == "6":
+        actualizar_tarifa_por_km_conductor()
+    elif opcion == "0":
+        salir=false
+    else:
+        print("Opción no válida")
+    print("\n")
+
+cursor.close()
+conexion.close()
+mostrar_menu()
+
+
+
+
