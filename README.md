@@ -1,4 +1,6 @@
 # basedatos-python
+Crear programa python para las tres bases de datos que haga estas funciones:
+
 Listar información: Mostrar la lista de conductores y el número de camiones que cada uno tiene asignado.
 
 Buscar o filtrar información: Mostrar los remolques cuya capacidad esté entre 5000 y 15000 kilos.
